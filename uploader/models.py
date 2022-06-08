@@ -1,7 +1,10 @@
 from django.db import models
 from django.contrib.auth.models import User
+from django.dispatch import receiver
 from django.urls import reverse
 
+from django.dispatch import receiver
+from django.db.models.signals import post_save
 # Create your models here.
 
 
@@ -19,10 +22,17 @@ class Profile(models.Model):
     image = models.ImageField(default='default.jpg', validators=[
                               validate_file_extension], upload_to='profile_pics', null=True, blank=True)
     bio = models.TextField(max_length=500, null=True, blank=True)
+    signup_confirmation = models.BooleanField(default=False)
 
     def __str__(self) -> str:
         return self.user.username
 
+# @receiver(post_save, sender=User)
+# def update_profile_signal(sender, instance, created, **kwargs):
+#     if created:
+#         Profile.objects.create(user=instance)
+
+#     instance.profile.save()
 
 class Uploader(models.Model):
     name = models.CharField(max_length=100, null=False, blank=False)

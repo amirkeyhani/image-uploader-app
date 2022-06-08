@@ -1,5 +1,6 @@
 from django.urls import path
 from .views import *
+from rest_framework import views
 
 urlpatterns = [
     path('uploader-list/', UploaderList.as_view(), name="uploader-list"),
@@ -22,4 +23,9 @@ urlpatterns = [
    	path('profile-update/<int:pk>/', ProfileUpdate.as_view(), name="profile-update"),
     path('profile-patch/<int:pk>/', ProfileUpdate.as_view(), name="profile-patch"),
    	path('profile-delete/<int:pk>/', ProfileDelete.as_view(), name="profile-delete"),
+    
+    path('user/', UserAPI.as_view()),
+    path('signup/', SignupAPI.as_view()),
+    path('login/', LoginAPI.as_view()),
+    # path('logout/', ),
 ]

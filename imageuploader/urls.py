@@ -50,10 +50,10 @@ urlpatterns = [
     path('accounts/', include('allauth.urls')),
     
     # path('api/', include(router.urls)),
-    path('api/v1/', include('api.urls')),
+    path('api/auth/', include('api.urls')),
     path('api-auth/', include('rest_framework.urls')),
-    path('dj-rest-auth/', include('dj_rest_auth.urls')),
-    path('dj-rest-auth/registration/', include('dj_rest_auth.registration.urls')),
+    # path('dj-rest-auth/', include('dj_rest_auth.urls')),
+    # path('dj-rest-auth/registration/', include('dj_rest_auth.registration.urls')),
     # path('openapi', get_schema_view(title='imageuploader API',
     #                                 description='A sample API for ImageUploader WebApp',
     #                                 version='1.0.0'), name='openapi-schema'),
