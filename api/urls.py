@@ -1,6 +1,5 @@
 from django.urls import path
 from .views import *
-from rest_framework import views
 
 urlpatterns = [
     path('uploader-list/', UploaderList.as_view(), name="uploader-list"),
@@ -27,5 +26,5 @@ urlpatterns = [
     path('user/', UserAPI.as_view()),
     path('signup/', SignupAPI.as_view()),
     path('login/', LoginAPI.as_view()),
-    # path('logout/', ),
+    path('logout/', LogoutAPI.as_view()),
 ]

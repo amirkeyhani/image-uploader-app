@@ -11,7 +11,7 @@ from rest_framework.authentication import TokenAuthentication
 
 from django.contrib.auth.models import User
 from rest_framework.authtoken.models import Token
-from django.contrib.auth import login
+from django.contrib.auth import login, logout
 
 # Create your views here.
 
@@ -53,6 +53,15 @@ class LoginAPI(APIView):
             login(request, user)
             return Response(data, status=status.HTTP_201_CREATED)
         return Response(data.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+class LogoutAPI(APIView):
+    permission_classes = [IsAuthenticated]
+    
+    def get(self, request, format=None):
+        request.user.auth_token.delete()
+        logout(request)
+        return Response(status=status.HTTP_200_OK)
+    # return Response(status=status.HTTP_400_BAD_REQUEST)
 
 
 class UploaderList(APIView):
