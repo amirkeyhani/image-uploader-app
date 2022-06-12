@@ -1,0 +1,43 @@
+version: '3.9'
+
+services:
+  imageuploader:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    volumes:
+      - .:/imageuploader
+      - imageuploader_static_volume:/imageuploader/static
+      - imageuploader_files_volume:/imageuploader/files
+    restart: always
+    ports:
+      - "8000:8000"
+    networks:
+      - imageuploader_network
+      - nginx_network
+    depends_on:
+      - imageuploader_postgresql
+  imageuploader_postgresql:
+    image: postgres:14.3
+    container_name: imageuploader_postgresql
+    volumes:
+      - imageuploader_postgresql:/var/lib/postgresql/data
+    restart: always
+    env_file: .env
+    ports:
+      - "5432:5432"
+    networks:
+      - imageuploader_network
+
+volumes:
+  imageuploader_postgresql:
+    external: true
+  imageuploader_static_volume:
+    external: true
+  imageuploader_files_volume:
+    external: true
+networks:
+  imageuploader_network:
+    external: true
+  nginx_network:
+    external: true
