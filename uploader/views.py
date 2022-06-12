@@ -1,3 +1,5 @@
+import email
+from django.conf import settings
 from django.shortcuts import render, redirect, get_object_or_404
 from .forms import CommentForm, SignupForm, UpdateUserForm, ProfileUpdateForm
 from .models import Uploader
@@ -15,6 +17,8 @@ from django.template.loader import render_to_string
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from django.utils.encoding import force_bytes, force_str
 from django.db import IntegrityError
+from django.template.loader import get_template
+from django.core.mail import send_mail, EmailMultiAlternatives
 # Create your views here.
 
 
@@ -74,8 +78,10 @@ def image_detail(request, pk):
                   {'image': image, 'comments': comments,
                    'new_comment': new_comment, 'comment_form': comment_form})
 
+
 def activation_sent(request):
     return render(request, 'activation_sent.html')
+
 
 def activate(request, uidb64, token):
     try:
@@ -83,16 +89,32 @@ def activate(request, uidb64, token):
         user = User.objects.get(pk=uid)
     except (TypeError, ValueError, OverflowError, User.DoesNotExist):
         user = None
-        
+
+    # user = authenticate(request, username=username, password=password)
     if user is not None and account_activation_token.check_token(user, token):
         user.is_active = True
         user.profile.signup_confirmation = True
         user.save()
-        auth_login(request, user)
-        messages.success(request, 'Sign up Done, You are logged in!!')
+        auth_login(request, user,
+                   backend='django.contrib.auth.backends.ModelBackend')
+        messages.success(
+            request, 'Sign up Done. Your account has been created!, You are logged in!!')
         return redirect('/')
     else:
         return render(request, 'activation_invalid.html')
+
+
+def email(request):
+    send_mail(
+        subject='Greetings',
+        message='Hello, how are you?',
+        from_email=settings.EMAIL_HOST_USER,
+        recipient_list=[request.user.email],
+        fail_silently=False
+    )
+    messages.success(request, 'email sent...')
+    return render(request, 'index.html')
+
 
 def signup(request):
     if request.method == 'POST':
@@ -103,24 +125,35 @@ def signup(request):
             user.profile.first_name = fm.cleaned_data.get('first_name')
             user.profile.last_name = fm.cleaned_data.get('last_name')
             user.profile.email = fm.cleaned_data.get('email')
-            # user.is_active = False
+            user.is_active = False
             user.save()
+            
             username = fm.cleaned_data.get('username')
-            password = fm.cleaned_data.get('password1')
-            user = authenticate(request, username=username, password=password)
-            if user is not None:
-                auth_login(request, user)
-                messages.success(request, 'Sign up Done, You are logged in!!')
-                return redirect('/')
-            # current_site = get_current_site(request)
-            # subject = 'Please activate your account'
-            # message = render_to_string('activation_request.html', {
-            #                            'user': user, 
-            #                            'domain': current_site.domain, 
-            #                            'uid': urlsafe_base64_encode(force_bytes(user.pk)), 
-            #                            'token': account_activation_token.make_token(user),})
-            # user.email_user(subject, message)
-            # return redirect('activation_sent')
+            email = fm.cleaned_data.get('email')
+            # password = fm.cleaned_data.get('password1')
+            htmly = get_template('email.html')
+            d = {'username': username}
+            subject, from_email, to = 'Welcome', settings.EMAIL_HOST_USER, email
+            html_content = htmly.render(d)
+            msg = EmailMultiAlternatives(
+                subject, html_content, from_email, [to])
+            msg.attach_alternative(html_content, 'text/html')
+            msg.send()
+            # messages.success(
+            #     request, 'Your account has been created! You\'re now able to log in')
+            
+            current_site = get_current_site(request)
+            subject = 'Please activate your account.'
+            message = render_to_string('activation_request.html', {
+                                        'user': user,
+                                        # 'domain': current_site.domain,
+                                        # 'domain': get_current_site(request).domain,
+                                        'domain': request.get_host(),
+                                        'uid': urlsafe_base64_encode(force_bytes(user.pk)),
+                                        'token': account_activation_token.make_token(user),
+                                        })
+            user.email_user(subject, message)
+            return redirect('activation_sent')
     else:
         fm = SignupForm()
 
@@ -141,7 +174,7 @@ def login(request):
             messages.info(request, 'Account does not exist, plz sign up!!')
     else:
         form = AuthenticationForm()
-        
+
     return render(request, 'login.html', {'form': form})
 
 
