@@ -1,0 +1,25 @@
+version: "3.9"
+
+services:
+  nginx:
+    container_name: nginx
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "80:80"
+    volumes:
+      - imageuploader_static_volume:/imageuploader/static
+      - imageuploader_media_volume:/imageuploader/media
+    networks:
+      - nginx_network
+
+
+volumes:
+  imageuploader_static_volume:
+    external: true
+  imageuploader_media_volume:
+    external: true
+networks:
+  nginx_network:
+    external: true
