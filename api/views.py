@@ -58,8 +58,9 @@ class LogoutAPI(APIView):
     permission_classes = [IsAuthenticated]
     
     def get(self, request, format=None):
-        request.user.auth_token.delete()
-        logout(request)
+        if request.user.is_authenticated:
+            request.user.auth_token.delete()
+            logout(request)
         return Response(status=status.HTTP_200_OK)
     # return Response(status=status.HTTP_400_BAD_REQUEST)
 
