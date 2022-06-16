@@ -34,7 +34,7 @@ class Profile(models.Model):
 
 #     instance.profile.save()
 
-class Uploader(models.Model):
+class Image(models.Model):
     name = models.CharField(max_length=100, null=False, blank=False)
     image = models.ImageField(
         validators=[validate_file_extension], upload_to='images', null=False, blank=False)
@@ -53,7 +53,7 @@ class Uploader(models.Model):
 
 class Comment(models.Model):
     image = models.ForeignKey(
-        Uploader, on_delete=models.CASCADE, related_name='comments')
+        Image, on_delete=models.CASCADE, related_name='comments')
     user = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
     email = models.EmailField()
     text = models.TextField()

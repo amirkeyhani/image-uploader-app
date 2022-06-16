@@ -2,7 +2,7 @@ from lib2to3.pgen2 import token
 from django.shortcuts import render
 from rest_framework.views import APIView
 from rest_framework.decorators import api_view
-from uploader.models import Uploader, Comment, Profile
+from uploader.models import Image, Comment, Profile
 from .serializers import LoginSerializer, UploaderSerializer, CommentSerializer, ProfileSerializer, UserSerializer, SignupSerializer
 from rest_framework.response import Response
 from rest_framework import status
@@ -69,7 +69,7 @@ class UploaderList(APIView):
     permission_classes = [IsAuthenticatedOrReadOnly]
 
     def get(self, request, format=None):
-        uploaders = Uploader.objects.all()
+        uploaders = Image.objects.all()
         serializer = UploaderSerializer(uploaders, many=True)
         return Response(serializer.data)
 
@@ -92,8 +92,8 @@ class UploaderDetail(APIView):
 
     def get_object(self, pk):
         try:
-            return Uploader.objects.get(pk=pk)
-        except Uploader.DoesNotExist:
+            return Image.objects.get(pk=pk)
+        except Image.DoesNotExist:
             raise Response(status=status.HTTP_404_NOT_FOUND)
 
     def get(self, request, pk, format=None):
@@ -108,8 +108,8 @@ class UploaderUpdate(APIView):
 
     def get_object(self, pk):
         try:
-            return Uploader.objects.get(pk=pk)
-        except Uploader.DoesNotExist:
+            return Image.objects.get(pk=pk)
+        except Image.DoesNotExist:
             raise Response(status=status.HTTP_404_NOT_FOUND)
 
     def put(self, request, pk, format=None):
@@ -136,8 +136,8 @@ class UploaderDelete(APIView):
 
     def get_object(self, pk):
         try:
-            return Uploader.objects.get(pk=pk)
-        except Uploader.DoesNotExist:
+            return Image.objects.get(pk=pk)
+        except Image.DoesNotExist:
             raise Response(status=status.HTTP_404_NOT_FOUND)
 
     def delete(self, request, pk, format=None):

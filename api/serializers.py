@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from uploader.models import Uploader, Comment, Profile
+from uploader.models import Image, Comment, Profile
 
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate
@@ -33,7 +33,7 @@ class LoginSerializer(serializers.Serializer):
 
 class UploaderSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Uploader
+        model = Image
         fields = '__all__'
 
 

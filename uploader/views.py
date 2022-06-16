@@ -2,7 +2,7 @@ import email
 from django.conf import settings
 from django.shortcuts import render, redirect, get_object_or_404
 from .forms import CommentForm, SignupForm, UpdateUserForm, ProfileUpdateForm
-from .models import Uploader
+from .models import Image
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import authenticate
@@ -23,7 +23,7 @@ from django.core.mail import send_mail, EmailMultiAlternatives
 
 
 def index(request):
-    images = Uploader.objects.all().order_by('-created_at')[:9]
+    images = Image.objects.all().order_by('-created_at')[:9]
     paginator = Paginator(images, 10)
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
@@ -38,12 +38,12 @@ def image_uploader(request):
         image = 'image' in request.FILES and request.FILES['image']
         profile = 'profile' in request.POST and request.POST['profile']
 
-        uploader = Uploader(user=request.user, name=name,
+        uploader = Image(user=request.user, name=name,
                             image=image, profile=profile)
         uploader.save()
         messages.success(request, 'Your Image Uploaded Successfully!!')
 
-    images = Uploader.objects.all().order_by('-created_at')[:9]
+    images = Image.objects.all().order_by('-created_at')[:9]
     paginator = Paginator(images, 10)
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
@@ -54,7 +54,7 @@ def image_uploader(request):
 
 login_required(login_url='login')
 def image_like(request, pk):
-    uploader = Uploader.objects.get(pk=pk)
+    uploader = Image.objects.get(pk=pk)
     uploader.like += 1
     uploader.save()
     return redirect('/')
@@ -62,7 +62,7 @@ def image_like(request, pk):
 
 @login_required(login_url='login')
 def image_detail(request, pk):
-    image = get_object_or_404(Uploader, pk=pk)
+    image = get_object_or_404(Image, pk=pk)
     comments = image.comments.filter(active=True)
     new_comment = None
     if request.method == 'POST':
@@ -201,7 +201,7 @@ def profile_update(request):
 @login_required(login_url='login')
 def user_profile(request, user):
     usr = User.objects.get(username=user)
-    prof_img = Uploader.objects.filter(user=user)
+    prof_img = Image.objects.filter(user=user)
 
     return render(request, 'user-profile.html',
                   {'user': usr, 'prof_img': prof_img})

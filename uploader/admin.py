@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Uploader, Profile, Comment
+from .models import Image, Profile, Comment
 
 # Register your models here.
 admin.site.site_header = 'Image Uploader administration'
@@ -7,8 +7,8 @@ admin.site.index_title = 'Img_uploader-app administration'
 admin.site.site_title = 'Django site admin'
 
 
-@admin.register(Uploader)
-class UploaderAdmin(admin.ModelAdmin):
+@admin.register(Image)
+class ImageAdmin(admin.ModelAdmin):
     list_display = ['id', 'name', 'image', 'user', 'profile', 'created_at']
 
 

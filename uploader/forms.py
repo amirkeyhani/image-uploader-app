@@ -1,14 +1,14 @@
 from django import forms
 from django.contrib.auth.models import User
 from django.contrib.auth.forms import UserCreationForm
-from .models import Uploader, Profile, Comment
+from .models import Image, Profile, Comment
 
 # Create your forms here.
 
 
 class UploaderForm(forms.ModelForm):
     class Meta:
-        model = Uploader
+        model = Image
         fields = '__all__'
         exclude = ['like', 'created_at']
 
