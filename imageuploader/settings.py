@@ -24,10 +24,9 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = '%1=gz)n5#))jpo+ac*wh6&mtrn6u*wn#zv%54fjzepn+*u(r*!'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
-# ALLOWED_HOSTS = ['imageuploader-app.herokuapp.com', 'localhost']
-ALLOWED_HOSTS = ['*']
+ALLOWED_HOSTS = ['imageuploader-app.herokuapp.com', 'localhost']
 
 
 # Application definition
@@ -62,7 +61,7 @@ INSTALLED_APPS = [
 MIDDLEWARE = [
     # 'django.middleware.cache.UpdateCacheMiddleware',
     'django.middleware.security.SecurityMiddleware',
-    # 'whitenoise.middleware.WhiteNoiseMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     # 'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
