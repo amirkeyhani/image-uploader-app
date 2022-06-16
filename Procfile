@@ -1,1 +1,1 @@
-web: gunicorn imageuploader.wsgi --log-file -
+web: gunicorn --port=$PORT imageuploader.wsgi:application 
