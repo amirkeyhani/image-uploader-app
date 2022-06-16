@@ -1,1 +1,1 @@
-web: gunicorn imageuploader.wsgi:application 
+web: gunicorn imageuploader.wsgi
