@@ -1,1 +1,1 @@
-web: waitress-serve --port=$PORT imageuploader.wsgi:application 
+web: gunicorn imageuploader.wsgi --log-file -
