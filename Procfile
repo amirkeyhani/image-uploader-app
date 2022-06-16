@@ -1,1 +1,1 @@
-web: gunicorn --port=$PORT imageuploader.wsgi:application 
+web: gunicorn imageuploader.wsgi:application 
