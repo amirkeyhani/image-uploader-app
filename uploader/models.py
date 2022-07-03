@@ -47,8 +47,7 @@ class Image(models.Model):
         return f'{self.name} {self.user}'
 
     def get_absolute_url(self):
-        return reverse("image_detail", kwargs={"pk": str(self.pk)})
-        # args = [str(self.id)]
+        return reverse("image_detail", kwargs={"pk": str(self.pk)}) # args = [str(self.id)]
 
 
 class Comment(models.Model):

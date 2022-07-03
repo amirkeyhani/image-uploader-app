@@ -1,12 +1,12 @@
-from lib2to3.pgen2 import token
-from django.shortcuts import render
+# from django.shortcuts import render
+
 from rest_framework.views import APIView
 from rest_framework.decorators import api_view
 from uploader.models import Image, Comment, Profile
-from .serializers import LoginSerializer, UploaderSerializer, CommentSerializer, ProfileSerializer, UserSerializer, SignupSerializer
+from .serializers import LoginSerializer, ImageSerializer, CommentSerializer, ProfileSerializer, UserSerializer, SignupSerializer
 from rest_framework.response import Response
 from rest_framework import status
-from rest_framework.permissions import IsAuthenticated, IsAuthenticatedOrReadOnly
+from rest_framework.permissions import IsAdminUser, IsAuthenticated, IsAuthenticatedOrReadOnly
 from rest_framework.authentication import TokenAuthentication
 
 from django.contrib.auth.models import User
@@ -18,7 +18,7 @@ from django.contrib.auth import login, logout
 
 class UserAPI(APIView):
     authentication_classes = [TokenAuthentication]
-    permission_classes = [IsAuthenticatedOrReadOnly]
+    permission_classes = [IsAdminUser]
 
     def get(self, request, format=None):
         users = User.objects.all()
@@ -54,6 +54,7 @@ class LoginAPI(APIView):
             return Response(data, status=status.HTTP_201_CREATED)
         return Response(data.errors, status=status.HTTP_400_BAD_REQUEST)
     
+    
 class LogoutAPI(APIView):
     permission_classes = [IsAuthenticated]
     
@@ -61,33 +62,33 @@ class LogoutAPI(APIView):
         if request.user.is_authenticated:
             request.user.auth_token.delete()
             logout(request)
-        return Response(status=status.HTTP_200_OK)
-    # return Response(status=status.HTTP_400_BAD_REQUEST)
+            return Response(status=status.HTTP_200_OK)
+        return Response(status=status.HTTP_403_FORBIDDEN)
 
 
-class UploaderList(APIView):
+class ImageList(APIView):
     authentication_classes = [TokenAuthentication]
     permission_classes = [IsAuthenticatedOrReadOnly]
 
     def get(self, request, format=None):
-        uploaders = Image.objects.all()
-        serializer = UploaderSerializer(uploaders, many=True)
-        return Response(serializer.data)
+        images = Image.objects.all()
+        serializer = ImageSerializer(images, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
 
 
-class UploaderCreate(APIView):
+class ImageCreate(APIView):
     authentication_classes = [TokenAuthentication]
     permission_classes = [IsAuthenticated]
 
     def post(self, request, format=None):
-        serializer = UploaderSerializer(data=request.data)
+        serializer = ImageSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-class UploaderDetail(APIView):
+class ImageDetail(APIView):
     authentication_classes = [TokenAuthentication]
     permission_classes = [IsAuthenticatedOrReadOnly]
 
@@ -98,12 +99,12 @@ class UploaderDetail(APIView):
             raise Response(status=status.HTTP_404_NOT_FOUND)
 
     def get(self, request, pk, format=None):
-        uploader = self.get_object(pk)
-        serializer = UploaderSerializer(uploader)
-        return Response(serializer.data)
+        image = self.get_object(pk)
+        serializer = ImageSerializer(image)
+        return Response(serializer.data, status=status.HTTP_200_OK)
 
 
-class UploaderUpdate(APIView):
+class ImageUpdate(APIView):
     authentication_classes = [TokenAuthentication]
     permission_classes = [IsAuthenticated]
 
@@ -114,24 +115,24 @@ class UploaderUpdate(APIView):
             raise Response(status=status.HTTP_404_NOT_FOUND)
 
     def put(self, request, pk, format=None):
-        uploader = self.get_object(pk)
-        serializer = UploaderSerializer(uploader, data=request.data)
+        image = self.get_object(pk)
+        serializer = ImageSerializer(image, data=request.data)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_200_OK)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     def patch(self, request, pk, format=None):
-        uploader = self.get_object(pk)
-        serializer = UploaderSerializer(
-            uploader, data=request.data, partial=True)
+        image = self.get_object(pk)
+        serializer = ImageSerializer(
+            image, data=request.data, partial=True)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_200_OK)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-class UploaderDelete(APIView):
+class ImageDelete(APIView):
     authentication_classes = [TokenAuthentication]
     permission_classes = [IsAuthenticated]
 
@@ -142,9 +143,9 @@ class UploaderDelete(APIView):
             raise Response(status=status.HTTP_404_NOT_FOUND)
 
     def delete(self, request, pk, format=None):
-        uploader = self.get_object(pk)
-        uploader.delete()
-        return Response('Uploader deleted', status=status.HTTP_204_NO_CONTENT)
+        image = self.get_object(pk)
+        image.delete()
+        return Response('Image deleted', status=status.HTTP_204_NO_CONTENT)
 
 
 class CommentList(APIView):
@@ -154,7 +155,7 @@ class CommentList(APIView):
     def get(self, request, format=None):
         comments = Comment.objects.all()
         serializer = CommentSerializer(comments, many=True)
-        return Response(serializer.data)
+        return Response(serializer.data, status=status.HTTP_200_OK)
 
 
 class CommentCreate(APIView):
@@ -182,7 +183,7 @@ class CommentDetail(APIView):
     def get(self, request, pk, format=None):
         comment = self.get_object(pk)
         serializer = CommentSerializer(comment)
-        return Response(serializer.data)
+        return Response(serializer.data, status=status.HTTP_200_OK)
 
 
 class CommentUpdate(APIView):
@@ -236,7 +237,7 @@ class ProfileList(APIView):
     def get(self, request, format=None):
         profiles = Profile.objects.all()
         serializer = ProfileSerializer(profiles, many=True)
-        return Response(serializer.data)
+        return Response(serializer.data, status=status.HTTP_200_OK)
 
 
 class ProfileCreate(APIView):
@@ -264,7 +265,7 @@ class ProfileDetail(APIView):
     def get(self, request, pk, format=None):
         profile = self.get_object(pk)
         serializer = ProfileSerializer(profile)
-        return Response(serializer.data)
+        return Response(serializer.data, status=status.HTTP_200_OK)
 
 
 class ProfileUpdate(APIView):

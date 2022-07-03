@@ -1,4 +1,3 @@
-import email
 from django.conf import settings
 from django.shortcuts import render, redirect, get_object_or_404
 from .forms import CommentForm, SignupForm, UpdateUserForm, ProfileUpdateForm
@@ -13,11 +12,10 @@ from django.core.paginator import Paginator
 
 from .tokens import account_activation_token
 from django.contrib.sites.shortcuts import get_current_site
-from django.template.loader import render_to_string
+from django.template.loader import render_to_string, get_template
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from django.utils.encoding import force_bytes, force_str
 from django.db import IntegrityError
-from django.template.loader import get_template
 from django.core.mail import send_mail, EmailMultiAlternatives
 # Create your views here.
 

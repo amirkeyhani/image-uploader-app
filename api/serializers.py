@@ -8,7 +8,8 @@ from django.contrib.auth import authenticate
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ['id', 'username', 'email']
+        fields = ['id', 'username', 
+                  'first_name', 'last_name', 'email', 'is_superuser']
         
 class SignupSerializer(serializers.ModelSerializer):
     class Meta:
@@ -31,7 +32,7 @@ class LoginSerializer(serializers.Serializer):
             return user
         raise serializers.ValidationError('Incorrect Credentials')
 
-class UploaderSerializer(serializers.ModelSerializer):
+class ImageSerializer(serializers.ModelSerializer):
     class Meta:
         model = Image
         fields = '__all__'
