@@ -5,6 +5,7 @@ from django.urls import reverse
 
 from django.dispatch import receiver
 from django.db.models.signals import post_save
+import uuid
 # Create your models here.
 
 
@@ -23,6 +24,8 @@ class Profile(models.Model):
                               validate_file_extension], upload_to='profile_pics', null=True, blank=True)
     bio = models.TextField(max_length=500, null=True, blank=True)
     signup_confirmation = models.BooleanField(default=False)
+    uuid = models.UUIDField(default=uuid.uuid4, editable=False)
+    email_verified = models.BooleanField(default=False)
 
     def __str__(self) -> str:
         return self.user.username
