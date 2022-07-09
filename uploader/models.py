@@ -2,6 +2,8 @@ from django.db import models
 from django.contrib.auth.models import User
 from django.dispatch import receiver
 from django.urls import reverse
+import os
+from django.core.exceptions import ValidationError
 
 from django.dispatch import receiver
 from django.db.models.signals import post_save
@@ -10,13 +12,14 @@ import uuid
 
 
 def validate_file_extension(value):
-    import os
-    from django.core.exceptions import ValidationError
     ext = os.path.splitext(value.name)[1]
     valid_extensions = ['.jpg', '.png']
     if not ext.lower() in valid_extensions:
         raise ValidationError('Unsupported file extension.')
 
+# def email_exist(value):
+#     if User.objects.filter(email=value).exists():
+#         raise ValidationError('A profile with this Email Address already exists')
 
 class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)

@@ -228,6 +228,7 @@ def change_password(request, uid):
                     user.password = make_password(pass1)
                     user.save()
                     messages.success(request, 'Your Password has been reset successfully')
+                    return redirect('login')
                 else:
                     messages.error(request, 'Two passwords did not match')
                     
