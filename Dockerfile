@@ -14,4 +14,4 @@ RUN pip install -r requirements.txt
 
 RUN python manage.py collectstatic --no-input
 
-CMD ["gunicorn", "--chdir", "imageuploader", "--bind", ":8000", "imageuploader.wsgi:application"]
+CMD gunicorn -b 0.0.0.0:8000 imageuploader.wsgi:application

@@ -10,7 +10,7 @@ services:
       - imageuploader_static_volume:/imageuploader/static
       - imageuploader_files_volume:/imageuploader/files
     restart: always
-    ports:
+    expose:
       - "8000:8000"
     networks:
       - imageuploader_network
