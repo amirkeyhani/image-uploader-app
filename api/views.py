@@ -59,11 +59,11 @@ class LogoutAPI(APIView):
     permission_classes = [IsAuthenticated]
     
     def get(self, request, format=None):
-        if request.user.is_authenticated:
-            request.user.auth_token.delete()
-            logout(request)
-            return Response(status=status.HTTP_200_OK)
-        return Response(status=status.HTTP_403_FORBIDDEN)
+        # if request.user.is_authenticated:
+        request.user.auth_token.delete()
+        logout(request)
+        return Response(status=status.HTTP_200_OK)
+        # return Response(status=status.HTTP_403_FORBIDDEN)
 
 
 class ImageList(APIView):
