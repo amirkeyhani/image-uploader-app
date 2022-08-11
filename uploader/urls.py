@@ -1,6 +1,7 @@
 from django.urls import path
+
 from .views import *
-from django.contrib.auth import views as authviews
+# from django.contrib.auth import views as authviews
 
 urlpatterns = [
     path('', index, name='home'),
@@ -12,7 +13,7 @@ urlpatterns = [
     
     path('signup/', signup, name='signup'),
     path('login/', login, name='login'),
-    path('logout/', authviews.LogoutView.as_view(template_name='logout.html'), name='logout'),
+    path('logout/', logout, name='logout'),
     path('sent/', activation_sent, name='activation_sent'),
     path('activate/<slug:uidb64>/<slug:token>/', activate, name='activate'),
     path('sendemail/', email, name='send-email'),

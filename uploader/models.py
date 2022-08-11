@@ -1,6 +1,5 @@
 from django.db import models
 from django.contrib.auth.models import User
-from django.dispatch import receiver
 from django.urls import reverse
 import os
 from django.core.exceptions import ValidationError
@@ -30,9 +29,9 @@ class Profile(models.Model):
     uuid = models.UUIDField(default=uuid.uuid4, editable=False)
     email_verified = models.BooleanField(default=False)
 
-    def __str__(self) -> str:
+    def __str__(self):
         return self.user.username
-
+    
 # @receiver(post_save, sender=User)
 # def update_profile_signal(sender, instance, created, **kwargs):
 #     if created:
@@ -46,27 +45,30 @@ class Image(models.Model):
         validators=[validate_file_extension], upload_to='images', null=False, blank=False)
     user = models.CharField(max_length=100, null=False, blank=False)
     profile = models.CharField(max_length=100, null=False, blank=False)
-    created_at = models.DateTimeField(auto_now_add=True, blank=False)
+    created_at = models.DateTimeField(auto_now_add=True)
     like = models.IntegerField(default=0, blank=True)
+    
+    class Meta:
+        ordering = ['-created_at']
 
-    def __str__(self) -> str:
+    def __str__(self):
         return f'{self.name} {self.user}'
 
     def get_absolute_url(self):
-        return reverse("image_detail", kwargs={"pk": str(self.pk)}) # args = [str(self.id)]
+        return reverse("image_detail", kwargs={"pk": str(self.pk)}) # args=[str(self.id)]
 
 
 class Comment(models.Model):
     image = models.ForeignKey(
         Image, on_delete=models.CASCADE, related_name='comments')
-    user = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
     email = models.EmailField()
     text = models.TextField()
-    commented_at = models.DateTimeField(auto_now_add=True, blank=False)
+    commented_at = models.DateTimeField(auto_now_add=True)
     active = models.BooleanField(default=False)
 
     class Meta:
-        ordering = ['commented_at']
+        ordering = ['-commented_at']
 
-    def __str__(self) -> str:
+    def __str__(self):
         return f'Comment {self.text} by {self.user} with email ID: {self.email}'

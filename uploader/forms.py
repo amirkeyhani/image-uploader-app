@@ -3,6 +3,8 @@ from django.contrib.auth.models import User
 from django.contrib.auth.forms import UserCreationForm
 from .models import Image, Profile, Comment
 
+from django.contrib.auth import get_user_model
+
 # Create your forms here.
 
 
@@ -19,7 +21,7 @@ class SignupForm(UserCreationForm):
     last_name = forms.CharField(max_length=100, help_text='Last Name')
 
     class Meta:
-        model = User
+        model = get_user_model()
         fields = ['username', 'first_name', 'last_name',
                   'email', 'password1', 'password2']
 
@@ -28,7 +30,7 @@ class UpdateUserForm(forms.ModelForm):
     email = forms.EmailField(max_length=150)
 
     class Meta:
-        model = User
+        model = get_user_model()
         fields = ['username', 'email', 'first_name', 'last_name']
 
 

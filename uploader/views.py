@@ -6,7 +6,7 @@ from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import authenticate
 from django.contrib.auth import login as auth_login
-from django.contrib.auth.models import User
+from django.contrib.auth.models import User, auth
 from django.contrib.auth.forms import AuthenticationForm
 from django.core.paginator import Paginator
 
@@ -193,6 +193,13 @@ def login(request):
         form = AuthenticationForm()
 
     return render(request, 'login.html', {'form': form})
+
+@login_required
+def logout(request):
+    # request.session.clear()
+    auth.logout(request)
+    return redirect('login')
+    # return render(request, 'logout.html')
 
 def forget_password(request):
     if request.method == 'POST':

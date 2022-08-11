@@ -166,6 +166,23 @@ AUTHENTICATION_BACKENDS = [
     'allauth.account.auth_backends.AuthenticationBackend',
 ]
 
+SOCIALACCOUNT_QUERY_EMAIL = True
+ACCOUNT_LOGOUT_ON_GET= True
+ACCOUNT_UNIQUE_EMAIL = True
+ACCOUNT_EMAIL_REQUIRED = True
+
+SOCIALACCOUNT_PROVIDERS = {
+    'google': {
+        'SCOPE': [
+            'profile',
+            'email',
+        ],
+        'AUTH_PARAMS': {
+            'access_type': 'online',
+        }
+    }
+}
+
 LOGIN_REDIRECT_URL = '/'
 LOGIN_URL = '/login/'
 LOGOUT_REDIRECT_URL = '/login/'
@@ -177,19 +194,20 @@ CSRF_COOKIE_SECURE = True
 
 CRISPY_TEMPLATE_PACK = 'bootstrap4'
 
-CORS_ORIGIN_WHITELIST = [
-    'http://127.0.0.1:3000',
-    # 'http://127.0.0.1:8000'
-]
-
 REST_FRAMEWORK = {
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
     'PAGE_SIZE': 10,
     'DEFAULT_AUTHENTICATION_CLASSES': [
-        # 'rest_framework.authentication.SessionAuthentication',
+        # 'rest_framework.authentication.BasicAuthentication', 
+        # 'rest_framework.authentication.SessionAuthentication', 
         'rest_framework.authentication.TokenAuthentication',
-    ]
+    ],
 }
+
+# CORS_ORIGIN_WHITELIST = [
+#     'http://127.0.0.1:3000',
+#     'http://localhost:3000'
+# ]
 
 # CACHE_MIDDLEWARE_ALIAS = 'default'
 # CACHE_MIDDLEWARE_SECONDS = 604800
@@ -200,4 +218,4 @@ EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 EMAIL_HOST_USER = 'keyhaniamir01@gmail.com'
-EMAIL_HOST_PASSWORD = '@#AmirK_21#@'
+EMAIL_HOST_PASSWORD = 'cdjvrgdnmkmpcmbx'

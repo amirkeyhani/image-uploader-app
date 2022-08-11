@@ -23,7 +23,7 @@ class UserAPI(APIView):
     def get(self, request, format=None):
         users = User.objects.all()
         serializer = UserSerializer(users, many=True)
-        return Response(serializer.data)
+        return Response(serializer.data, status=status.HTTP_200_OK)
 
 
 class SignupAPI(APIView):
@@ -35,8 +35,8 @@ class SignupAPI(APIView):
             user = serializer.save()
             token = Token.objects.create(user=user)
             data = serializer.data
-            data['token'] = token.key
-            return Response(data, status=status.HTTP_201_CREATED)
+            # data['token'] = token.key
+            return Response({'token': token.key, 'data': data}, status=status.HTTP_201_CREATED)
         return Response(data.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
@@ -49,9 +49,9 @@ class LoginAPI(APIView):
             user = serializer.validated_data
             token, created = Token.objects.get_or_create(user=user)
             data = serializer.data
-            data['token'] = token.key
+            # data['token'] = token.key
             login(request, user)
-            return Response(data, status=status.HTTP_201_CREATED)
+            return Response({'token': token.key, 'data': data}, status=status.HTTP_201_CREATED)
         return Response(data.errors, status=status.HTTP_400_BAD_REQUEST)
     
     

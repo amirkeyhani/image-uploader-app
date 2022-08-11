@@ -3,7 +3,7 @@ from .models import Image, Profile, Comment
 
 # Register your models here.
 admin.site.site_header = 'Image Uploader administration'
-admin.site.index_title = 'Img_uploader-app administration'
+admin.site.index_title = 'Image_uploader-app administration'
 admin.site.site_title = 'Django site admin'
 
 
