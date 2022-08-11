@@ -8,13 +8,14 @@ from django.contrib.auth import authenticate, get_user_model
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = get_user_model()
-        fields = ['id', 'username', 
-                  'first_name', 'last_name', 'email', 'is_active', 'is_staff', 'is_superuser']
+        fields = ['id', 'username', 'first_name', 'last_name', 
+                  'email', 'is_active', 'is_staff', 'is_superuser']
         
 class SignupSerializer(serializers.ModelSerializer):
     class Meta:
         model = get_user_model()
-        fields = ['id', 'username', 'email', 'password']
+        fields = ['id', 'username', 
+                  'first_name', 'last_name', 'email', 'password']
         extra_kwargs = {'password': {'write_only': True}}
         
     def create(self, validated_data):

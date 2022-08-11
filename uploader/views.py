@@ -21,6 +21,8 @@ from django.core.mail import send_mail, EmailMultiAlternatives
 from django.contrib.auth.hashers import make_password
 from django.http import HttpResponse
 import random
+
+from django.contrib.auth import get_user_model
 # Create your views here.
 
 
@@ -103,7 +105,7 @@ def activation_sent(request):
 def activate(request, uidb64, token):
     try:
         uid = force_str(urlsafe_base64_decode(uidb64))
-        user = User.objects.get(pk=uid)
+        user = get_user_model().objects.get(pk=uid)
     except (TypeError, ValueError, OverflowError, User.DoesNotExist):
         user = None
 
@@ -204,8 +206,8 @@ def logout(request):
 def forget_password(request):
     if request.method == 'POST':
         email = request.POST['email']
-        if User.objects.filter(email=email).exists():
-            uid = User.objects.get(email=email)
+        if get_user_model().objects.filter(email=email).exists():
+            uid = get_user_model().objects.get(email=email)
             host = request.get_host()
             url = f'http://{host}/change-password/{uid.profile.uuid}'
             
@@ -231,7 +233,7 @@ def change_password(request, uid):
                 if pass1 == pass2:
                     p = Profile.objects.get(uuid=uid)
                     u = p.user
-                    user = User.objects.get(username=u)
+                    user = get_user_model().objects.get(username=u)
                     user.password = make_password(pass1)
                     user.save()
                     messages.success(request, 'Your Password has been reset successfully')
@@ -282,7 +284,7 @@ def profile_update(request):
 
 @login_required(login_url='login')
 def user_profile(request, user):
-    usr = User.objects.get(username=user)
+    usr = get_user_model().objects.get(username=user)
     prof_img = Image.objects.filter(user=user)
 
     return render(request, 'user-profile.html',
