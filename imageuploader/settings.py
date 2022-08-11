@@ -222,3 +222,7 @@ EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 EMAIL_HOST_USER = 'keyhaniamir01@gmail.com'
 EMAIL_HOST_PASSWORD = 'cdjvrgdnmkmpcmbx'
+
+REST_USE_JWT = True
+JWT_AUTH_COOKIE = 'access'
+JWT_AUTH_REFRESH_COOKIE = 'refresh'
